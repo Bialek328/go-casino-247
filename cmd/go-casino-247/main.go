@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	deck := decks.InitDeck()
+	deck := decks.InitBlackJackDeck()
 	for _, card := range deck.Cards {
 		fmt.Println(card)
 	}
