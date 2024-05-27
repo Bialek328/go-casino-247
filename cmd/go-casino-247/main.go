@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	for _, value := range decks.Colors {
-		fmt.Println(value)
+	deck := decks.InitDeck()
+	for _, card := range deck.Cards {
+		fmt.Println(card)
 	}
 }
