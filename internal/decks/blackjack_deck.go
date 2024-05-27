@@ -1,6 +1,10 @@
 package decks
 
-import "strconv"
+import (
+	"math/rand"
+	"strconv"
+	"time"
+)
 
 // definition of colors and symbols for cards
 var colors = [4]string{"clubs", "diamonds", "hearts", "spades"}
@@ -27,6 +31,10 @@ type Card struct {
 // structure to hold a array of cards to represent a card deck, cards values  are added according to blackjack rules
 type BlackJackDeck struct {
 	Cards []Card
+}
+
+func (d *BlackJackDeck) Shuffle() {
+	// TODO: add an algorithm to shuffle the deck
 }
 
 // initialize a deck for blackjack
