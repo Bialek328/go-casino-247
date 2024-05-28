@@ -1,9 +1,7 @@
 package decks
 
 import (
-	"math/rand"
 	"strconv"
-	"time"
 )
 
 // definition of colors and symbols for cards
