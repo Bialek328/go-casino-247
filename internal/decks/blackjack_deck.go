@@ -1,6 +1,7 @@
 package decks
 
 import (
+	"math/rand"
 	"strconv"
 )
 
@@ -33,6 +34,18 @@ type BlackJackDeck struct {
 
 func (d *BlackJackDeck) Shuffle() {
 	// TODO: add an algorithm to shuffle the deck
+	cards := d.Cards
+	deck_len := len(cards) - 1
+	for i := 0; i <= deck_len; i++ {
+		j := rand.Intn(deck_len)
+		cards[i], cards[j] = cards[j], cards[i]
+	}
+}
+
+func (d *BlackJackDeck) DealCard() Card {
+	card := d.Cards[len(d.Cards)-1]
+	d.Cards = d.Cards[:len(d.Cards)-1]
+	return card
 }
 
 // initialize a deck for blackjack

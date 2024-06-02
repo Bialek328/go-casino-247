@@ -1,6 +1,8 @@
 package players
 
-import "github.com/Bialek328/go-casino-247/internal/decks"
+import (
+	"github.com/Bialek328/go-casino-247/internal/decks"
+)
 
 type Player struct {
 	Name      string
@@ -10,12 +12,25 @@ type Player struct {
 	HandScore int
 }
 
-func (p *Player) GetHandScore() int {
+func (p *Player) GetHandScore() {
+	// calculate the players score, adjust ace value depending on the overall score
 	var score int
+	var aceCount int
 	for _, card := range p.Hand {
 		score += card.Value
+		if card.Symbol == decks.Ace {
+			aceCount++
+		}
 	}
-	return score
+	if score > 21 && aceCount > 0 {
+		score -= 10
+		aceCount--
+	}
+	p.HandScore = score
+}
+
+func (p *Player) GetCard(card decks.Card) {
+	p.Hand = append(p.Hand, card)
 }
 
 type Dealer struct {
@@ -24,10 +39,14 @@ type Dealer struct {
 	HandScore int
 }
 
-func (d *Dealer) GetHandScore() int {
+func (d *Dealer) GetHandScore() {
 	var score int
 	for _, card := range d.Hand {
 		score += card.Value
 	}
-	return score
+	d.HandScore = score
+}
+
+func (d *Dealer) GetCard(card decks.Card) {
+	d.Hand = append(d.Hand, card)
 }
