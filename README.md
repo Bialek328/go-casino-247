@@ -2,4 +2,4 @@
 
 ## Blackjack
 
-This repository contains code for a terminal blackjack game
+This is a client-server blackjack app
