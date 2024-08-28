@@ -2,6 +2,7 @@ package blackjack
 
 import (
     "strconv"
+    "math/rand"
 )
 
 const (
@@ -29,19 +30,31 @@ type Deck struct {
 }
 
 func (d *Deck) Shuffle() {
-
+	cards := d.Cards
+	deck_len := len(cards) - 1
+	for i := 0; i <= deck_len; i++ {
+		j := rand.Intn(deck_len)
+		cards[i], cards[j] = cards[j], cards[i]
+	}
 }
 
-func (d *Deck) DealCard() {
-
+func (d *Deck) DealCard() Card {
+    lastIndex := len(d.Cards) - 1
+    card := d.Cards[lastIndex]
+    d.Cards = d.Cards[:lastIndex]
+    return card
 }
 
 func NewDeck(numberOfDecks int) Deck {
     // numberOfDecks - deck being a singular colection of 52 cards
     // return already shuffled deck
-    deck := Deck{}
-    var all_cards []Cards
-    for _, 
+    var all_cards []Card
+    for i := 0; i < numberOfDecks; i++ {
+        cards := createSingleDeckCards()
+        all_cards = append(all_cards, cards...)
+    }
+    deck := Deck{Cards: all_cards}
+    deck.Shuffle()
     return deck
 }
 
@@ -63,3 +76,4 @@ func createSingleDeckCards() []Card {
     }
     return cards
 }
+
