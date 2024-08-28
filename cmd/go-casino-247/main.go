@@ -1,21 +1,23 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"os"
 
 	"github.com/Bialek328/go-casino-247/internal/boards"
 	"github.com/Bialek328/go-casino-247/internal/decks"
 	"github.com/Bialek328/go-casino-247/internal/players"
 )
 
+var playersList []players.Player
+var Deck decks.BlackJackDeck
+
 func runBanner() {
-	for {
-		boards.DisplayBanner()
-	}
+	boards.DisplayBanner()
 }
 
 func getInput() string {
-	fmt.Println("Press Q to exit")
 	var q string
 	fmt.Scanln(&q)
 	return q
@@ -36,25 +38,74 @@ func hit(player *players.Player, deck *decks.BlackJackDeck) {
 	player.GetCard(card)
 }
 
+func AddPlayer() {
+	var name string
+	var cash int
+	fmt.Println("Player name:")
+	fmt.Scanln(&name)
+	fmt.Println("Player cash:")
+	fmt.Scanln(&cash)
+
+	player := players.Player{Name: name, Cash: cash}
+	pointerPlayer := &player
+	playersList = append(playersList, *pointerPlayer)
+	fmt.Println(playersList)
+}
+
+// func StartGame() {
+// 	Deck = decks.InitBlackJackDeck()
+// 	dealer := players.Dealer{Name: "Dealer"}
+// 	// dealerPointer := &dealer
+// 	// initialDealing(playersList, dealerPointer, Deck)
+// }
+
+func blackjack(input string) {
+	const addPlayer = "a"
+	const startGame = "s"
+	const exit = "q"
+
+	switch input {
+	case exit:
+		os.Exit(0)
+	case addPlayer:
+		AddPlayer()
+	case startGame:
+		fmt.Println("Starting game")
+	default:
+		err := errors.New("wrong option")
+		fmt.Println(err)
+	}
+}
+
 func main() {
-	deck := decks.InitBlackJackDeck()
-	deck_pointer := &deck
-	player1 := players.Player{
-		Name: "Mat",
-		Cash: 1000,
-	}
-	dealer := players.Dealer{
-		Name: "Dealer",
-	}
-	dealer_pointer := &dealer
-	deck.Shuffle()
-	players := []*players.Player{&player1}
+	q := make(chan bool)
 
-	initialDealing(players, dealer_pointer, deck_pointer)
-	dealer.GetHandScore()
-	hit(players[0], deck_pointer)
-	player1.GetHandScore()
+	go func() {
+		for {
+			select {
+			case <-q:
+				return
+			default:
+				runBanner()
+			}
+		}
+	}()
 
-	fmt.Println(player1)
-	fmt.Println(dealer)
+	input := getInput()
+	if input != "" {
+		q <- true
+		boards.ClearBanner()
+		fmt.Println("Witamy w kasynie")
+		fmt.Println("(a) add player\n(s) start game\n(q) exit game")
+		fmt.Println("Choose option:")
+		var in string
+
+		if in == "q" {
+			os.Exit(0)
+		}
+		for in != "q" {
+			blackjack(in)
+			fmt.Scanln(&in)
+		}
+	}
 }

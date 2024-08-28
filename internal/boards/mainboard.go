@@ -5,8 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"time"
-	// "os"
-	// "os/exec"
 )
 
 const baner = `
@@ -29,6 +27,9 @@ const baner = `
  \______/  | _|      |_______||__| \__|    |____|    |_|   /__/    /_/
 
 `
+const instruction = `
+                            Press < any key > to continue
+`
 
 const (
 	RedColor   = "\x1b[31m"
@@ -40,9 +41,11 @@ const (
 func showBanner(color string) {
 	str := color + baner + ResetColor
 	fmt.Print(str)
+	str2 := ResetColor + "\n" + instruction
+	fmt.Print(str2)
 }
 
-func clearBanner() {
+func ClearBanner() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
@@ -61,7 +64,8 @@ func DisplayBanner() {
 }
 
 func blinkBanner(color string, interval time.Duration) {
-	clearBanner()
 	showBanner(color)
 	time.Sleep(interval)
+	ClearBanner()
+
 }
