@@ -45,7 +45,7 @@ func (d *Deck) DealCard() Card {
     return card
 }
 
-func NewDeck(numberOfDecks int) Deck {
+func NewDeck(numberOfDecks int) *Deck {
     // numberOfDecks - deck being a singular colection of 52 cards
     // return already shuffled deck
     var all_cards []Card
@@ -53,7 +53,7 @@ func NewDeck(numberOfDecks int) Deck {
         cards := createSingleDeckCards()
         all_cards = append(all_cards, cards...)
     }
-    deck := Deck{Cards: all_cards}
+    deck := &Deck{Cards: all_cards}
     deck.Shuffle()
     return deck
 }

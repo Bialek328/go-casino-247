@@ -9,7 +9,7 @@ import (
 func TestNewPlayer(t *testing.T) {
     name := "Mat"
     player := NewPlayer(name)
-    if reflect.TypeOf(player) != reflect.TypeOf(Player{}) {
+    if reflect.TypeOf(player) != reflect.TypeOf(&Player{}) {
         t.Errorf("NewPlayer returning wrong type")
     }
     if player.Name != name {
@@ -21,7 +21,7 @@ func TestNewPlayer(t *testing.T) {
 
 func TestNewDealer(t *testing.T) {
     dealer := NewDealer()
-    if reflect.TypeOf(dealer) != reflect.TypeOf(Dealer{}) {
+    if reflect.TypeOf(dealer) != reflect.TypeOf(&Dealer{}) {
         t.Errorf("Wrong type of the dealer")
     }
     if dealer.Name != "Dealer" {
@@ -64,34 +64,53 @@ func TestDealerGetCard(t *testing.T) {
     }
 }
 
-func TestGetHandScore(t *testing.T) {
-    player := NewPlayer("Mat")
-    player.GetHandScore()
-    score := player.HandScore
-    if score != 0 {
-        t.Errorf("Expected empty hand to have score 0")
+func TestCalculateHandScore(t *testing.T) {
+    cards := []Card{
+        {Symbol: Queen, Color: "hearts", Value: 10},
+        {Symbol: "2", Color: "spades", Value: 2},
     }
-    cards :=[]Card{
-        {Symbol: Queen, Color: "clubs", Value: 10},
-        {Symbol: "2", Color: "clubs", Value: 2},
-    }
-    player.Hand = cards
-    player.GetHandScore()
-    if player.HandScore != 12 {
+    score := calculateHandScore(cards)
+    if score != 12 {
         t.Errorf("Error calculating hand value")
     }
     ace := Card{Symbol: Ace, Color: "spades", Value: 11}
-    player.GetCard(ace)
-    player.GetHandScore()
-    if player.HandScore != 13 {
+    cards = append(cards, ace)
+    score = calculateHandScore(cards)
+    if score != 13 {
         t.Errorf("Error while adjusting Ace value")
     }
-    player.Hand = []Card{
-        {Symbol: Ace, Color: "spades",Value: 11},
-        {Symbol: "10",Color: "clubs",Value: 10},
+    cards = []Card{
+        {Symbol: Ace, Color: "spades", Value: 11},
+        {Symbol: Queen, Color: "diamonds", Value: 10},
     }
-    player.GetHandScore()
-    if player.HandScore != 21 {
+    score = calculateHandScore(cards)
+    if score != 21 {
         t.Errorf("Error while getting base ace value")
+    }
+}
+
+func TestDealerGetHandScore(t *testing.T) {
+    cards := []Card{
+        {Symbol: Ace, Color: "spades", Value: 11},
+        {Symbol: Queen, Color: "diamonds", Value: 10},
+    }
+    dealer := NewDealer()
+    dealer.Hand = cards
+    dealer.GetHandScore()
+    if dealer.HandScore != 21 {
+        t.Errorf("Error calculating dealer hand score")
+    }
+}
+
+func TestPlayerGetHandScore(t *testing.T) {
+    cards := []Card{
+        {Symbol: Ace, Color: "spades", Value: 11},
+        {Symbol: Queen, Color: "diamonds", Value: 10},
+    }
+    player := NewPlayer("Mat")
+    player.Hand = cards
+    score := player.GetHandScore()
+    if score != 21 {
+        t.Errorf("Error calculating player hand score")
     }
 }

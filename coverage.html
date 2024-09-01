@@ -57,7 +57,7 @@
 				
 				<option value="file0">github.com/Bialek328/go-casino-247/pkg/blackjack/deck.go (100.0%)</option>
 				
-				<option value="file1">github.com/Bialek328/go-casino-247/pkg/blackjack/player.go (81.8%)</option>
+				<option value="file1">github.com/Bialek328/go-casino-247/pkg/blackjack/player.go (100.0%)</option>
 				
 				<option value="file2">github.com/Bialek328/go-casino-247/pkg/blackjack/table.go (0.0%)</option>
 				
@@ -156,6 +156,9 @@ func createSingleDeckCards() []Card <span class="cov8" title="1">{
 		
 		<pre class="file" id="file1" style="display: none">package blackjack
 
+const (
+
+)
 type Player struct {
         Name      string
         Cash      int
@@ -176,22 +179,29 @@ func NewDealer() Dealer <span class="cov8" title="1">{
     return dealer
 }</span>
 
-func (p *Player) GetHandScore() <span class="cov8" title="1">{
+func calculateHandScore(hand []Card) int <span class="cov8" title="1">{
         // calculate the players score, adjust ace value depending on the overall score
         var score int
         var aceCount int
-        for _, card := range p.Hand </span><span class="cov8" title="1">{
+        for _, card := range hand</span><span class="cov8" title="1">{
                 score += card.Value
                 if card.Symbol == Ace </span><span class="cov8" title="1">{
                         aceCount++
                 }</span>
         }
-        <span class="cov8" title="1">if score &gt; 21 &amp;&amp; aceCount &gt; 0 </span><span class="cov8" title="1">{
+        <span class="cov8" title="1">for score &gt; 21 &amp;&amp; aceCount &gt; 0 </span><span class="cov8" title="1">{
                 score -= 10
                 aceCount--
         }</span>
-        <span class="cov8" title="1">p.HandScore = score</span>
+    <span class="cov8" title="1">return score</span>
 }
+
+// todo: consider renaming or changing logic
+func (p *Player) GetHandScore() int <span class="cov8" title="1">{
+    score := calculateHandScore(p.Hand)
+    p.HandScore = score
+    return score
+}</span>
 
 func (p *Player) GetCard(card Card) <span class="cov8" title="1">{
         p.Hand = append(p.Hand, card)
@@ -203,13 +213,11 @@ type Dealer struct {
         HandScore int
 }
 
-func (d *Dealer) GetHandScore() <span class="cov0" title="0">{
-        var score int
-        for _, card := range d.Hand </span><span class="cov0" title="0">{
-                score += card.Value
-        }</span>
-        <span class="cov0" title="0">d.HandScore = score</span>
-}
+func (d *Dealer) GetHandScore() int <span class="cov8" title="1">{
+    score := calculateHandScore(d.Hand)
+    d.HandScore = score
+    return score
+}</span>
 
 func (d *Dealer) GetCard(card Card) <span class="cov8" title="1">{
         d.Hand = append(d.Hand, card)

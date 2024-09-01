@@ -1,7 +1,6 @@
 package blackjack
 
 import (
-    "fmt"
 	"testing"
     "reflect"
 )
@@ -9,7 +8,7 @@ import (
 func TestNewDeck(t *testing.T) {
     singleDecksN := 1
     deck := NewDeck(singleDecksN)
-    if reflect.TypeOf(deck) != reflect.TypeOf(Deck{}) {
+    if reflect.TypeOf(deck) != reflect.TypeOf(&Deck{}) {
         t.Errorf("wrong type of deck")
     }
     if len(deck.Cards) != (singleDecksN * 52) {
@@ -35,9 +34,3 @@ func TestCreateSingleDeckCards(t *testing.T) {
     }
 }
 
-func TestShuffleDeck(t *testing.T) {
-    deck := NewDeck(1)
-    firstCard := deck.Cards[0]
-    fmt.Println(firstCard)
-    deck.Shuffle()
-}
