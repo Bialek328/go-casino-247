@@ -1,14 +1,15 @@
 package blackjack
 
-const (
-
+import (
+    "github.com/google/uuid"
 )
 type Player struct {
-	Name      string
-	Cash      int
-	Bet       int
-	Hand      []Card
-	HandScore int
+    ID        string
+    Name      string
+    Cash      int
+    Bet       int
+    Hand      []Card
+    HandScore int
 }
 
 type Dealer struct {
@@ -18,8 +19,10 @@ type Dealer struct {
 }
 
 func NewPlayer(name string) *Player {
-    player := &Player{}
-    player.Name = name
+    player := &Player{
+        ID: uuid.New().String(),
+        Name: name,
+    }
     return player
 }
 
