@@ -11,11 +11,11 @@ func (t *Table) StartGame() {
 }
 
 func (t *Table) AddPlayer() error {
-
+    return nil
 }
 
 func (t *Table) RemovePlayer() error {
-
+    return nil
 }
 
 func (t *Table) ClearTable() {

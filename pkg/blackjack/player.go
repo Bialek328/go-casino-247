@@ -8,6 +8,18 @@ type Player struct {
 	HandScore int
 }
 
+func NewPlayer(name string) Player {
+    player := Player{}
+    player.Name = name
+    return player
+}
+
+func NewDealer() Dealer {
+    dealer := Dealer{}
+    dealer.Name = "Dealer"
+    return dealer
+}
+
 func (p *Player) GetHandScore() {
 	// calculate the players score, adjust ace value depending on the overall score
 	var score int

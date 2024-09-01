@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>blackjack: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/Bialek328/go-casino-247/pkg/blackjack/deck.go (100.0%)</option>
+				
+				<option value="file1">github.com/Bialek328/go-casino-247/pkg/blackjack/player.go (81.8%)</option>
+				
+				<option value="file2">github.com/Bialek328/go-casino-247/pkg/blackjack/table.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package blackjack
+
+import (
+    "strconv"
+    "math/rand"
+)
+
+const (
+    Jack = "J"
+    Queen = "Q"
+    King = "K"
+    Ace = "A"
+)
+
+// definition of colors and symbols for cards
+var colors = [4]string{"clubs", "diamonds", "hearts", "spades"}
+var symbols = [13]string{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"}
+
+const aceValue = 11
+const figureValue = 10
+
+type Card struct {
+    Color string
+    Symbol string
+    Value int
+}
+
+type Deck struct {
+    Cards []Card
+}
+
+func (d *Deck) Shuffle() <span class="cov8" title="1">{
+        cards := d.Cards
+        deck_len := len(cards) - 1
+        for i := 0; i &lt;= deck_len; i++ </span><span class="cov8" title="1">{
+                j := rand.Intn(deck_len)
+                cards[i], cards[j] = cards[j], cards[i]
+        }</span>
+}
+
+func (d *Deck) DealCard() Card <span class="cov8" title="1">{
+    lastIndex := len(d.Cards) - 1
+    card := d.Cards[lastIndex]
+    d.Cards = d.Cards[:lastIndex]
+    return card
+}</span>
+
+func NewDeck(numberOfDecks int) Deck <span class="cov8" title="1">{
+    // numberOfDecks - deck being a singular colection of 52 cards
+    // return already shuffled deck
+    var all_cards []Card
+    for i := 0; i &lt; numberOfDecks; i++ </span><span class="cov8" title="1">{
+        cards := createSingleDeckCards()
+        all_cards = append(all_cards, cards...)
+    }</span>
+    <span class="cov8" title="1">deck := Deck{Cards: all_cards}
+    deck.Shuffle()
+    return deck</span>
+}
+
+func createSingleDeckCards() []Card <span class="cov8" title="1">{
+    var cards []Card
+    for _, color := range(colors) </span><span class="cov8" title="1">{
+        for _, symbol := range(symbols) </span><span class="cov8" title="1">{
+            var value int
+            switch symbol </span>{
+            case Jack, Queen, King:<span class="cov8" title="1">
+                value = figureValue</span>
+            case Ace:<span class="cov8" title="1">
+                value = aceValue</span>
+            default:<span class="cov8" title="1">
+                value, _ = strconv.Atoi(symbol)</span>
+            }
+            <span class="cov8" title="1">cards = append(cards, Card{Color: color, Symbol: symbol, Value: value})</span>
+        }
+    }
+    <span class="cov8" title="1">return cards</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package blackjack
+
+type Player struct {
+        Name      string
+        Cash      int
+        Bet       int
+        Hand      []Card
+        HandScore int
+}
+
+func NewPlayer(name string) Player <span class="cov8" title="1">{
+    player := Player{}
+    player.Name = name
+    return player
+}</span>
+
+func NewDealer() Dealer <span class="cov8" title="1">{
+    dealer := Dealer{}
+    dealer.Name = "Dealer"
+    return dealer
+}</span>
+
+func (p *Player) GetHandScore() <span class="cov8" title="1">{
+        // calculate the players score, adjust ace value depending on the overall score
+        var score int
+        var aceCount int
+        for _, card := range p.Hand </span><span class="cov8" title="1">{
+                score += card.Value
+                if card.Symbol == Ace </span><span class="cov8" title="1">{
+                        aceCount++
+                }</span>
+        }
+        <span class="cov8" title="1">if score &gt; 21 &amp;&amp; aceCount &gt; 0 </span><span class="cov8" title="1">{
+                score -= 10
+                aceCount--
+        }</span>
+        <span class="cov8" title="1">p.HandScore = score</span>
+}
+
+func (p *Player) GetCard(card Card) <span class="cov8" title="1">{
+        p.Hand = append(p.Hand, card)
+}</span>
+
+type Dealer struct {
+        Name      string
+        Hand      []Card
+        HandScore int
+}
+
+func (d *Dealer) GetHandScore() <span class="cov0" title="0">{
+        var score int
+        for _, card := range d.Hand </span><span class="cov0" title="0">{
+                score += card.Value
+        }</span>
+        <span class="cov0" title="0">d.HandScore = score</span>
+}
+
+func (d *Dealer) GetCard(card Card) <span class="cov8" title="1">{
+        d.Hand = append(d.Hand, card)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package blackjack
+
+type Table struct {
+    ID string
+    Dealer Dealer
+    Players []Player
+}
+
+func (t *Table) StartGame() {<span class="cov0" title="0">
+
+}</span>
+
+func (t *Table) AddPlayer() error <span class="cov0" title="0">{
+    return nil
+}</span>
+
+func (t *Table) RemovePlayer() error <span class="cov0" title="0">{
+    return nil
+}</span>
+
+func (t *Table) ClearTable() {<span class="cov0" title="0">
+
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
