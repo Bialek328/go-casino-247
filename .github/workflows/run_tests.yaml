@@ -2,17 +2,18 @@ name: Test Go
 on:
   [push]
 jobs:
-  runs-on: ubuntu-latest
-
-  steps:
-    - uses: actions/checkout@v4
-    - name: Setup
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.22.x'
-    - name: Install dependencies
-      run: go get .
-    - name: Build
-      run: go build -v ./...
-    - name: Run tests
-      run: go test -v 
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build -v ./...
+      - name: Run tests
+        run: go test -v 
