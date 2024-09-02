@@ -126,9 +126,29 @@ func TestPlayerClearHand(t *testing.T) {
         {Symbol: Queen, Color: "diamonds", Value: 10},
     }
     player.Cards = cards
+    if len(player.Cards) != 2 {
+        t.Errorf("Cards not added to hand")
+    }
     player.ClearHand()
     if len(player.Cards) != 0 {
         t.Errorf("Player hand has not been cleared")
     }
 
+}
+
+func TestDealerClearHand(t *testing.T) {
+    dealer := NewDealer()
+
+    cards := []Card{
+        {Symbol: Ace, Color: "spades", Value: 11},
+        {Symbol: Queen, Color: "diamonds", Value: 10},
+    }
+    dealer.Cards = cards
+    if len(dealer.Cards) != 2 {
+        t.Errorf("Cards not added to hand")
+    }
+    dealer.ClearHand()
+    if len(dealer.Cards) != 0 {
+        t.Errorf("Player hand has not been cleared")
+    }
 }

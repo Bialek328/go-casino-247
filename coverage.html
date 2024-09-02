@@ -57,7 +57,7 @@
 				
 				<option value="file0">github.com/Bialek328/go-casino-247/pkg/blackjack/deck.go (100.0%)</option>
 				
-				<option value="file1">github.com/Bialek328/go-casino-247/pkg/blackjack/player.go (100.0%)</option>
+				<option value="file1">github.com/Bialek328/go-casino-247/pkg/blackjack/player.go (92.3%)</option>
 				
 				<option value="file2">github.com/Bialek328/go-casino-247/pkg/blackjack/table.go (0.0%)</option>
 				
@@ -120,7 +120,7 @@ func (d *Deck) DealCard() Card <span class="cov8" title="1">{
     return card
 }</span>
 
-func NewDeck(numberOfDecks int) Deck <span class="cov8" title="1">{
+func NewDeck(numberOfDecks int) *Deck <span class="cov8" title="1">{
     // numberOfDecks - deck being a singular colection of 52 cards
     // return already shuffled deck
     var all_cards []Card
@@ -128,7 +128,7 @@ func NewDeck(numberOfDecks int) Deck <span class="cov8" title="1">{
         cards := createSingleDeckCards()
         all_cards = append(all_cards, cards...)
     }</span>
-    <span class="cov8" title="1">deck := Deck{Cards: all_cards}
+    <span class="cov8" title="1">deck := &amp;Deck{Cards: all_cards}
     deck.Shuffle()
     return deck</span>
 }
@@ -156,25 +156,39 @@ func createSingleDeckCards() []Card <span class="cov8" title="1">{
 		
 		<pre class="file" id="file1" style="display: none">package blackjack
 
-const (
-
+import (
+    "github.com/google/uuid"
 )
+
+type Hand struct {
+    Cards []Card
+}
+
 type Player struct {
+    ID        string
+    Name      string
+    Cash      int
+    Bet       int
+    Hand      
+    HandScore int
+}
+
+type Dealer struct {
         Name      string
-        Cash      int
-        Bet       int
-        Hand      []Card
+        Hand      
         HandScore int
 }
 
-func NewPlayer(name string) Player <span class="cov8" title="1">{
-    player := Player{}
-    player.Name = name
+func NewPlayer(name string) *Player <span class="cov8" title="1">{
+    player := &amp;Player{
+        ID: uuid.New().String(),
+        Name: name,
+    }
     return player
 }</span>
 
-func NewDealer() Dealer <span class="cov8" title="1">{
-    dealer := Dealer{}
+func NewDealer() *Dealer <span class="cov8" title="1">{
+    dealer := &amp;Dealer{}
     dealer.Name = "Dealer"
     return dealer
 }</span>
@@ -196,53 +210,84 @@ func calculateHandScore(hand []Card) int <span class="cov8" title="1">{
     <span class="cov8" title="1">return score</span>
 }
 
-// todo: consider renaming or changing logic
 func (p *Player) GetHandScore() int <span class="cov8" title="1">{
-    score := calculateHandScore(p.Hand)
+    score := calculateHandScore(p.Cards)
     p.HandScore = score
     return score
 }</span>
 
 func (p *Player) GetCard(card Card) <span class="cov8" title="1">{
-        p.Hand = append(p.Hand, card)
+        p.Cards = append(p.Cards, card)
 }</span>
 
-type Dealer struct {
-        Name      string
-        Hand      []Card
-        HandScore int
-}
+func (p *Player) ClearHand() <span class="cov8" title="1">{
+    p.Cards = []Card{}
+}</span>
 
 func (d *Dealer) GetHandScore() int <span class="cov8" title="1">{
-    score := calculateHandScore(d.Hand)
+    score := calculateHandScore(d.Cards)
     d.HandScore = score
     return score
 }</span>
 
 func (d *Dealer) GetCard(card Card) <span class="cov8" title="1">{
-        d.Hand = append(d.Hand, card)
+        d.Cards = append(d.Cards, card)
+}</span>
+
+func (d *Dealer) ClearHand() <span class="cov0" title="0">{
+    d.Cards = []Card{}
+}</span>   
+
+func (h *Hand) ClearHand() <span class="cov0" title="0">{
+    h.Cards = []Card{}
 }</span>
 </pre>
 		
 		<pre class="file" id="file2" style="display: none">package blackjack
 
+import (
+        "fmt"
+
+        "github.com/google/uuid"
+)
+
 type Table struct {
     ID string
-    Dealer Dealer
-    Players []Player
+    Dealer *Dealer
+    Players []*Player
+    Deck *Deck
 }
 
-func (t *Table) StartGame() {<span class="cov0" title="0">
-
+func NewTable() *Table <span class="cov0" title="0">{
+    table := &amp;Table{
+        ID: uuid.New().String(),
+        Dealer: NewDealer(),
+        Players: make([]*Player, 0, 8),
+        Deck: NewDeck(6),
+    }
+    return table
 }</span>
 
-func (t *Table) AddPlayer() error <span class="cov0" title="0">{
-    return nil
-}</span>
+func (t *Table) AddPlayer(p *Player) error <span class="cov0" title="0">{
+    if len(t.Players) == cap(t.Players) </span><span class="cov0" title="0">{
+        err := fmt.Errorf("Cannot add player, table is full")
+        return err
+    }</span> else<span class="cov0" title="0"> {
+        t.Players = append(t.Players, p)
+    }</span>
+    <span class="cov0" title="0">return nil</span>
+}
 
-func (t *Table) RemovePlayer() error <span class="cov0" title="0">{
-    return nil
-}</span>
+func (t *Table) RemovePlayer(id string) error <span class="cov0" title="0">{
+    for i, val := range(t.Players) </span><span class="cov0" title="0">{
+        if val.ID == id </span><span class="cov0" title="0">{
+            t.Players = append(t.Players[:i], t.Players[i+1:]...)
+            return nil
+        }</span>
+    }
+    <span class="cov0" title="0">err := fmt.Errorf("Cannot remove player. No such player at the table")
+    return err</span>
+}
 
 func (t *Table) ClearTable() {<span class="cov0" title="0">
 
