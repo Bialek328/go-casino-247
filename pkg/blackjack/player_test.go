@@ -9,6 +9,9 @@ import (
 func TestNewPlayer(t *testing.T) {
     name := "Mat"
     player := NewPlayer(name)
+    if player.ID == "" {
+        t.Errorf("Expeted player ID")
+    }
     if reflect.TypeOf(player) != reflect.TypeOf(&Player{}) {
         t.Errorf("NewPlayer returning wrong type")
     }
@@ -33,10 +36,10 @@ func TestPlayerGetCard(t *testing.T) {
     player := NewPlayer("Mat")
     card := Card {Symbol: Queen, Color: "clubs", Value: 10}
     player.GetCard(card)
-    if len(player.Hand) == 0 {
+    if len(player.Cards) == 0 {
         t.Errorf("No card added to player hand")
     }
-    playerCard := player.Hand[0]
+    playerCard := player.Cards[0]
     if playerCard.Color != "clubs" {
         t.Errorf("Different color than expected")
     }
@@ -52,7 +55,7 @@ func TestDealerGetCard(t *testing.T) {
     dealer := NewDealer()
     card := Card{Symbol: Jack, Color: "hearts", Value: 10}
     dealer.GetCard(card)
-    dealerCard := dealer.Hand[0]
+    dealerCard := dealer.Cards[0]
     if dealerCard.Color != "hearts" {
         t.Errorf("Different color than expected")
     }
@@ -95,7 +98,7 @@ func TestDealerGetHandScore(t *testing.T) {
         {Symbol: Queen, Color: "diamonds", Value: 10},
     }
     dealer := NewDealer()
-    dealer.Hand = cards
+    dealer.Cards = cards
     dealer.GetHandScore()
     if dealer.HandScore != 21 {
         t.Errorf("Error calculating dealer hand score")
@@ -108,9 +111,24 @@ func TestPlayerGetHandScore(t *testing.T) {
         {Symbol: Queen, Color: "diamonds", Value: 10},
     }
     player := NewPlayer("Mat")
-    player.Hand = cards
+    player.Cards = cards
     score := player.GetHandScore()
     if score != 21 {
         t.Errorf("Error calculating player hand score")
     }
+}
+
+func TestPlayerClearHand(t *testing.T) {
+    player := NewPlayer("Mat")
+    
+    cards := []Card{
+        {Symbol: Ace, Color: "spades", Value: 11},
+        {Symbol: Queen, Color: "diamonds", Value: 10},
+    }
+    player.Cards = cards
+    player.ClearHand()
+    if len(player.Cards) != 0 {
+        t.Errorf("Player hand has not been cleared")
+    }
+
 }

@@ -3,18 +3,23 @@ package blackjack
 import (
     "github.com/google/uuid"
 )
+
+type Hand struct {
+    Cards []Card
+}
+
 type Player struct {
     ID        string
     Name      string
     Cash      int
     Bet       int
-    Hand      []Card
+    Hand      
     HandScore int
 }
 
 type Dealer struct {
 	Name      string
-	Hand      []Card
+	Hand      
 	HandScore int
 }
 
@@ -49,23 +54,34 @@ func calculateHandScore(hand []Card) int {
     return score
 }
 
-// todo: consider renaming or changing logic
 func (p *Player) GetHandScore() int {
-    score := calculateHandScore(p.Hand)
+    score := calculateHandScore(p.Cards)
     p.HandScore = score
     return score
 }
 
 func (p *Player) GetCard(card Card) {
-	p.Hand = append(p.Hand, card)
+	p.Cards = append(p.Cards, card)
+}
+
+func (p *Player) ClearHand() {
+    p.Cards = []Card{}
 }
 
 func (d *Dealer) GetHandScore() int {
-    score := calculateHandScore(d.Hand)
+    score := calculateHandScore(d.Cards)
     d.HandScore = score
     return score
 }
 
 func (d *Dealer) GetCard(card Card) {
-	d.Hand = append(d.Hand, card)
+	d.Cards = append(d.Cards, card)
+}
+
+func (d *Dealer) ClearHand() {
+    d.Cards = []Card{}
+}   
+
+func (h *Hand) ClearHand() {
+    h.Cards = []Card{}
 }
