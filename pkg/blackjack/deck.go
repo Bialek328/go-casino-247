@@ -20,13 +20,13 @@ const aceValue = 11
 const figureValue = 10
 
 type Card struct {
-    Color string
-    Symbol string
-    Value int
+    Color string `json:"color"`
+    Symbol string `json:"symbol"`
+    Value int `json:"value"`
 }
 
 type Deck struct {
-    Cards []Card
+    Cards []Card `json:"cards"`
 }
 
 func (d *Deck) Shuffle() {

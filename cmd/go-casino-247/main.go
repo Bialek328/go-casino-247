@@ -1,11 +1,15 @@
 package main
 
-import "github.com/Bialek328/go-casino-247/pkg/server"
+import (
+	"log"
+	"net/http"
+
+	"github.com/Bialek328/go-casino-247/pkg/server"
+)
 
 
 func main() {
-    server.InitTemplate()
-    server.SetupRoutes()
+    router := server.SetupRoutes()
 
-    server.StartServer()
+    log.Fatal(http.ListenAndServe(":8080", router))
 }

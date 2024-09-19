@@ -5,36 +5,25 @@ import (
 )
 
 type Hand struct {
-    Cards []Card
+    Cards []Card `json:"cards"`
 }
 
 type Player struct {
-    ID        string
-    Name      string
-    Cash      int
-    Bet       int
-    Hand      
-    HandScore int
+    ID        string `json:"id"`
+    Name      string `json:"name"`
+    Cash      int `json:"cash"`
+    BetAmount       int `json:"bet"`
+    Hand `json:"hand"`       
+    HandScore int `json:"handScore"`
+    IsDealer bool `json:"isDealer"`
 }
 
-type Dealer struct {
-	Name      string
-	Hand      
-	HandScore int
-}
-
-func NewPlayer(name string) *Player {
+func NewPlayer(name string, isDealer bool) *Player {
     player := &Player{
         ID: uuid.New().String(),
         Name: name,
     }
     return player
-}
-
-func NewDealer() *Dealer {
-    dealer := &Dealer{}
-    dealer.Name = "Dealer"
-    return dealer
 }
 
 func calculateHandScore(hand []Card) int {
@@ -68,19 +57,14 @@ func (p *Player) ClearHand() {
     p.Cards = []Card{}
 }
 
-func (d *Dealer) GetHandScore() int {
-    score := calculateHandScore(d.Cards)
-    d.HandScore = score
-    return score
+func (p* Player) Bet(amount int) {
+    p.BetAmount= amount
+    p.Cash = p.Cash - amount
 }
 
-func (d *Dealer) GetCard(card Card) {
-	d.Cards = append(d.Cards, card)
-}
+func (p *Player) Stand() {
 
-func (d *Dealer) ClearHand() {
-    d.Cards = []Card{}
-}   
+}
 
 func (h *Hand) ClearHand() {
     h.Cards = []Card{}

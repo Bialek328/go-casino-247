@@ -15,7 +15,5 @@ func TestNewTable(t *testing.T) {
         fmt.Println(reflect.TypeOf(table))
         t.Errorf("Wrong type iof table")
     }
-    if reflect.TypeOf(table.Dealer) != reflect.TypeOf(&Dealer{}) {
-        t.Errorf("Expected dealer to be added on init")
-    }
 }
+

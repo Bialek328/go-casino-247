@@ -8,7 +8,7 @@ import (
 
 func TestNewPlayer(t *testing.T) {
     name := "Mat"
-    player := NewPlayer(name)
+    player := NewPlayer(name, false)
     if player.ID == "" {
         t.Errorf("Expeted player ID")
     }
@@ -22,18 +22,8 @@ func TestNewPlayer(t *testing.T) {
 
 }
 
-func TestNewDealer(t *testing.T) {
-    dealer := NewDealer()
-    if reflect.TypeOf(dealer) != reflect.TypeOf(&Dealer{}) {
-        t.Errorf("Wrong type of the dealer")
-    }
-    if dealer.Name != "Dealer" {
-        t.Errorf("Something went wrong with the name")
-    }
-}
-
 func TestPlayerGetCard(t *testing.T) {
-    player := NewPlayer("Mat")
+    player := NewPlayer("Mat", false)
     card := Card {Symbol: Queen, Color: "clubs", Value: 10}
     player.GetCard(card)
     if len(player.Cards) == 0 {
@@ -47,22 +37,6 @@ func TestPlayerGetCard(t *testing.T) {
         t.Errorf("Different value than expected")
     }
     if playerCard.Symbol != Queen {
-        t.Errorf("Different symbol than expected")
-    }
-}
-
-func TestDealerGetCard(t *testing.T) {
-    dealer := NewDealer()
-    card := Card{Symbol: Jack, Color: "hearts", Value: 10}
-    dealer.GetCard(card)
-    dealerCard := dealer.Cards[0]
-    if dealerCard.Color != "hearts" {
-        t.Errorf("Different color than expected")
-    }
-    if dealerCard.Value != 10 {
-        t.Errorf("Different value than expected")
-    }
-    if dealerCard.Symbol != Jack {
         t.Errorf("Different symbol than expected")
     }
 }
@@ -92,25 +66,12 @@ func TestCalculateHandScore(t *testing.T) {
     }
 }
 
-func TestDealerGetHandScore(t *testing.T) {
-    cards := []Card{
-        {Symbol: Ace, Color: "spades", Value: 11},
-        {Symbol: Queen, Color: "diamonds", Value: 10},
-    }
-    dealer := NewDealer()
-    dealer.Cards = cards
-    dealer.GetHandScore()
-    if dealer.HandScore != 21 {
-        t.Errorf("Error calculating dealer hand score")
-    }
-}
-
 func TestPlayerGetHandScore(t *testing.T) {
     cards := []Card{
         {Symbol: Ace, Color: "spades", Value: 11},
         {Symbol: Queen, Color: "diamonds", Value: 10},
     }
-    player := NewPlayer("Mat")
+    player := NewPlayer("Mat", false)
     player.Cards = cards
     score := player.GetHandScore()
     if score != 21 {
@@ -119,7 +80,7 @@ func TestPlayerGetHandScore(t *testing.T) {
 }
 
 func TestPlayerClearHand(t *testing.T) {
-    player := NewPlayer("Mat")
+    player := NewPlayer("Mat", false)
     
     cards := []Card{
         {Symbol: Ace, Color: "spades", Value: 11},
@@ -136,19 +97,3 @@ func TestPlayerClearHand(t *testing.T) {
 
 }
 
-func TestDealerClearHand(t *testing.T) {
-    dealer := NewDealer()
-
-    cards := []Card{
-        {Symbol: Ace, Color: "spades", Value: 11},
-        {Symbol: Queen, Color: "diamonds", Value: 10},
-    }
-    dealer.Cards = cards
-    if len(dealer.Cards) != 2 {
-        t.Errorf("Cards not added to hand")
-    }
-    dealer.ClearHand()
-    if len(dealer.Cards) != 0 {
-        t.Errorf("Player hand has not been cleared")
-    }
-}
